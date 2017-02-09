@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * @file
+ * Contains dental.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\Entity\Node;
+
+/**
+ * Implements hook_help().
+ */
+function dental_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the dental module.
+    case 'help.page.dental':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Dental alterations') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+function dental_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+
+  if ($form_id == "node_package_form" || $form_id == "node_package_edit_form") {
+    //kint($form);
+    $form['title']['#disabled'] = TRUE;
+    //$form['title']['#access'] = FALSE;
+    $form['title']['widget']['0']['value']['#default_value'] = 'Title is auto populates by client, date and package';
+    $form['#validate'][] = 'dental_validate';
+    //kint($form);
+  }
+}
+
+function dental_validate(&$form, FormStateInterface $form_state) {
+
+  foreach ($form_state->get('inline_entity_form') as &$widget_state) {
+    foreach ($widget_state['entities'] as $delta => $entity_item) {
+      if (!empty($entity_item['entity'])) {
+        $title = $entity_item['entity']->get('title')->getValue()[0]['value'];
+      }
+    }
+  }
+
+  $length = $form_state->getValue('field_length')[0]['value'];
+  $ad_unit = $form_state->getValue('field_ad_unit')[0]['value'];
+
+
+  $new_title = $title . ' ' . $length . ' ' . $ad_unit;
+  $helper = array();
+  $helper[0]['value'] = $new_title;
+  $form_state->setValue('title', $helper);
+
+  // $form_state->setValue('field_expiring', array("2000-01-30"));
+
+
+  //dpm($form_state->getValue('field_expiring'));
+  //dpm($form_state->getValue('field_length'));
+  //$form_state->setErrorByName('title', t('Error Message'));
+}
+
+function dental_node_presave(Drupal\node\NodeInterface $node) {
+  //do this changes  only on package nodes
+  if ($node->get('type')->getString() == 'package') {
+    $effectiveDate = $node->get('field_from')->getString();
+
+    $length = $node->get('field_length')->getString();
+
+    $effectiveDate = date('Y-m-d', strtotime("+" . $length, strtotime($effectiveDate)));
+    $node->set('field_expiring', array($effectiveDate));
+
+  }
+}

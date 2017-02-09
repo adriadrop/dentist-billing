@@ -1,0 +1,5 @@
+name: Dental
+type: module
+description: Dental alterations
+core: 8.x
+package: Custom

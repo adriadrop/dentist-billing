@@ -1,0 +1,5 @@
+services:
+  welcome.nodes_get:
+    class: Drupal\welcome\Services\Node_service
+    arguments:
+      - @database

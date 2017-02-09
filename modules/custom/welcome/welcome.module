@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * Contains welcome.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_help().
+ */
+function welcome_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the welcome module.
+    case 'help.page.welcome':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('first module, yeah') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+
+
+
+
+function welcome_preprocess_block(&$variables) {
+
+  if ($variables['base_plugin_id'] == "language_block"){
+    //dpm($variables);
+
+    $variables['content']['#links']['hr']['title'] .= " dodaj_nesto";
+  }
+}
+
+
+function welcome_preprocess_page(&$variables) {
+ // dpm($variables);
+  if ($variables['base_plugin_id'] == "language_block"){
+    //dpm($variables);
+
+    $variables['content']['#links']['hr']['title'] .= " dodaj_nesto";
+  }
+}
+
+function welcome_user_login($account) {
+  $config = \Drupal::config('welcome.Default');
+  drupal_set_message($config->get('some_text'));
+}
+

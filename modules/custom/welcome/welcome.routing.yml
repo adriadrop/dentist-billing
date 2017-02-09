@@ -1,0 +1,45 @@
+
+welcome.welcome_controller_welcome:
+  path: 'welcome'
+  defaults:
+    _controller: '\Drupal\welcome\Controller\WelcomeController::welcome_test'
+    _title: 'Welcome Controller'
+    _title_context: "trying to force this shit to appear"
+  requirements:
+    _permission: 'access content'
+
+welcome.nodes_list:
+  path: /some_nodes/{count}
+  defaults:
+    _controller: '\Drupal\welcome\Controller\Nodes1::show_me'
+    _title: 'Can this be translated'
+  requirements:
+    _permission: 'access content'
+
+# In order to to create pages it is necessary to define routes for them.
+# A route maps a URL path to a controller. It defines what function
+# or method will be called when a URL is accessed.
+# If the user accesses http://drupal8.dev/horuk, the routing
+# system will look for a route with that path. In this case it will find a
+# match, and execute the _controller callback. In this case the callback is
+# defined as a classname
+# ("\Drupal\welcome\Controller\newController")
+# and a method ("hey_ho").
+welcome.new_controller_hey_ho:
+  path: 'horuk'
+  defaults:
+    _controller: '\Drupal\welcome\Controller\newController::hey_ho'
+    _title: 'controler title'
+  requirements:
+    _permission: 'access content'
+
+welcome.default_form:
+  path: '/admin/config/welcome/default'
+  defaults:
+    _form: '\Drupal\welcome\Form\DefaultForm'
+    _title: 'DefaultForm'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+
